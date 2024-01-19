@@ -17,6 +17,32 @@ export default class App extends Component {
     filter: '',
   };
 
+  handleSubmit = data => {
+    this.setState(prev => {
+      return {
+        contacts: [...prev.contacts, { ...data, id: nanoid() }],
+      };
+    });
+  };
+  handleFilter = value => {
+    this.setState({
+      filter: value,
+    });
+  };
+  handleDeleteContact = id => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(item => item.id !== id),
+    }));
+  };
+  filterContacts = () => {
+    return this.state.contacts.filter(item =>
+      item.name
+        .trim()
+        .toLowerCase()
+        .includes(this.state.filter.trim().toLowerCase())
+    );
+  };
+
   componentDidMount() {
     const contacts =
       JSON.parse(localStorage.getItem('contacts')) ?? this.state.contacts;
@@ -30,24 +56,6 @@ export default class App extends Component {
     localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
   }
 
-  handleSubmit = data => {
-    this.setState(prev => {
-      return {
-        contacts: [...prev.contacts, { ...data, id: nanoid() }],
-      };
-    });
-  };
-  handleFilter = ({ target }) => {
-    this.setState({
-      filter: target.value,
-    });
-  };
-  handleDeleteContact = id => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(item => item.id !== id),
-    }));
-  };
-
   render() {
     return (
       <div className="phonebook">
@@ -59,8 +67,7 @@ export default class App extends Component {
         <h2>Contacts</h2>
         <Filter onFilter={this.handleFilter} />
         <ContactsList
-          filter={this.state.filter}
-          contacts={this.state.contacts}
+          contacts={this.filterContacts()}
           onDelete={this.handleDeleteContact}
         />
       </div>

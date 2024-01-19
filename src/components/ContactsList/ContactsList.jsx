@@ -1,20 +1,11 @@
-export const ContactsList = ({ contacts, filter, onDelete }) => {
+import { ContactItem } from '../ContactItem/ContactItem';
+
+export const ContactsList = ({ contacts, ...otherProps }) => {
   return (
     <ul>
-      {contacts
-        .filter(item =>
-          item.name.trim().toLowerCase().includes(filter.trim().toLowerCase())
-        )
-        .map(contact => {
-          return (
-            <li key={contact.id}>
-              {contact.name}: {contact.number}
-              <button onClick={() => onDelete(contact.id)} type="butoon">
-                Delete
-              </button>
-            </li>
-          );
-        })}
+      {contacts.map(contact => (
+        <ContactItem key={contact.id} contact={contact} {...otherProps} />
+      ))}
     </ul>
   );
 };
